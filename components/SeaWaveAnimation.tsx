@@ -1,4 +1,3 @@
-import { TextureLoader } from "three";
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
@@ -13,10 +12,11 @@ import { Water } from "three/examples/jsm/objects/Water.js";
 import { Sky } from "three/examples/jsm/objects/Sky.js";
 import * as THREE from "three";
 import { gsap } from "gsap";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
 
 // Water component using Three.js
 const WaterComponent = () => {
-  const waterRef = useRef<THREE.Water | null>(null);
+  const waterRef = useRef();
   const { scene } = useThree();
 
   useEffect(() => {
@@ -52,9 +52,7 @@ const WaterComponent = () => {
   }, [scene]);
 
   useFrame((state, delta) => {
-    if (waterRef.current) {
-      waterRef.current.material.uniforms["time"].value += delta / 2.0;
-    }
+    waterRef.current.material.uniforms["time"].value += delta / 2.0;
   });
 
   return null;
@@ -62,7 +60,7 @@ const WaterComponent = () => {
 
 // Sky component
 const SkyComponent = () => {
-  const skyRef = useRef<THREE.Sky | null>(null);
+  const skyRef = useRef();
   const { scene } = useThree();
 
   useEffect(() => {
@@ -83,23 +81,17 @@ const SkyComponent = () => {
 };
 
 // Floating object component
-interface FloatingObjectProps {
-  position: [number, number, number];
-}
-
-const FloatingObject = ({ position }: FloatingObjectProps) => {
-  const mesh = useRef<THREE.Mesh | null>(null);
+const FloatingObject = ({ position }) => {
+  const mesh = useRef();
   const [hovered, setHovered] = useState(false);
 
   const texture = useLoader(TextureLoader, "/wood-texture.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.position.y =
-        position[1] + Math.sin(state.clock.elapsedTime) * 0.1;
-      mesh.current.rotation.x += delta * 0.2;
-      mesh.current.rotation.y += delta * 0.1;
-    }
+    mesh.current.position.y =
+      position[1] + Math.sin(state.clock.elapsedTime) * 0.1;
+    mesh.current.rotation.x += delta * 0.2;
+    mesh.current.rotation.y += delta * 0.1;
   });
 
   return (
